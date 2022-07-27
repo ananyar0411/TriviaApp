@@ -61,7 +61,7 @@ def create_app(test_config=None):
                     'success':True, 
                     'questions': current_ques,
                     'total_questons': len(selection),
-                    'currentCategory': None,
+                    'current_category': None,
                     'categories': cats
                 }
             )
@@ -117,7 +117,7 @@ def create_app(test_config=None):
                     "success": True,
                     "created": question.id,
                     "question": current_ques,
-                    "totalQuestions": len(selection),
+                    "total_questions": len(selection),
                 }
             )
         except:
@@ -136,7 +136,7 @@ def create_app(test_config=None):
                 {
                     "success": True,
                     "question": current_ques,
-                    "totalQuestions": len(selection),
+                    "total_questions": len(selection),
                 }
             )
         except:
@@ -152,8 +152,8 @@ def create_app(test_config=None):
                 {
                     'success': True,
                     'questions': question,
-                    'totalQuestions': len(selection),
-                    'currentCategory': category_id
+                    'total_questions': len(selection),
+                    'current_category': category_id
                 }
             )
         except:
