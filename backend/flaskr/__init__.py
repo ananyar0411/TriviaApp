@@ -158,41 +158,33 @@ def create_app(test_config=None):
             )
         except:
             abort(404)
-    """
-    @TODO:
-    Create a POST endpoint to get questions to play the quiz.
-    This endpoint should take category and previous question parameters
-    and return a random questions within the given category,
-    if provided, and that is not one of the previous questions.
 
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not.
-    """
-    @app.route('/quizzes', methods=['POST'])
+    @app.route("/quizzes", methods=["POST"])
     def play_quiz():
-        if request.method == "POST":
-            
-                body = request.get_json()
-                prev_questions = body.get('previous_questions', [])
-                category = body.get('quiz_category', None)
-
-                cat_id = category['id']
-                next_question = None
-                
-                if cat_id != 0:
-                    av_questions = Question.query.filter_by(category=cat_id).filter(Question.id.notin_((prev_questions))).all()    
+        body = request.get_json()
+        previous_questions = body.get("previous_questions", [])
+        quiz_category = body.get("quiz_category", None)
+        try:
+            if quiz_category:
+                if quiz_category["id"] == 0:
+                    quiz = Question.query.all()
                 else:
-                    av_questions = Question.query.filter(Question.id.notin_((prev_questions))).all()
-                
-                if len(av_questions) > 0:
-                    next_question = random.choice(av_questions).format()
-                
-                return jsonify({
-                    'question': next_question,
-                    'success': True,
-                })
+                    quiz = Question.query.filter_by(category=quiz_category["id"]).all()
+            if not quiz:
+                return abort(422)
+            selected = []
+            for question in quiz:
+                if question.id not in previous_questions:
+                    selected.append(question.format())
+            if len(selected) != 0:
+                result = random.choice(selected)
+                return jsonify({"question": result})
+            else:
+                return jsonify({"question": False})
+        except:
+            abort(404)
             
+
     @app.errorhandler(404)
     def not_found(error):
         return (
@@ -249,3 +241,4 @@ def create_app(test_config=None):
         )
 
     return app
+
